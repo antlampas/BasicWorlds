@@ -43,13 +43,14 @@ func DeregisterAgent(name:String):
         emit_signal("Agent_deregistered")
     else:
         emit_signal("Agent_doesnt_exist")
-func RegisterInput(input:String,agent:String,event:String):
+func RegisterInput(input:=String(),agent:=String(),event:=String()):
     if agent in self.Agents.keys():
         if not InputMap.has_action(input):
             InputMap.add_action(input)
-            var Event = funcref(self.Agent.get(event),event)
-            if Event != null:
+            if not event.empty():
                 self.Inputs[input] = [agent,event]
+                InputMap.add_action(input)
+                self.Agents[agent].add_user_signal(event)
                 emit_signal("Input_registered")
             else:
                 emit_signal("Input_not_registered")
@@ -59,10 +60,12 @@ func RegisterInput(input:String,agent:String,event:String):
         emit_signal("Agent_doesnt_exist")
 func DeregisterInput(input:String):
     if input in self.Inputs.keys():
+        for agent in self.Agents:
+            if agent.has_signal(self.Inputs[input][1]):
+                pass #TODO: find a way to remove signals
         if InputMap.has_action(input):
             InputMap.erase_action(input)
-        if input in Inputs.keys():
-            self.Inputs.erase(input)
+        self.Inputs.erase(input)
 func _input(event):
     #This is Control Loop in the diagram
     if event.as_text() in self.Inputs.keys():

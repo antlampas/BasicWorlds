@@ -6,6 +6,6 @@ BigFontTheme.tres
 asset_lib_icon.png
 default_env.tres
 icon.png.import
-.import
+.import/
 .gut_editor_config.json
 .gut_editor_shortcuts.cfg

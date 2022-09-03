@@ -6,6 +6,11 @@
 
 extends Node2D
 
+signal Object_exists
+signal Character_exists
+signal Player_exists
+signal AI_exists
+
 var Position   : Vector2
 var Size       : Vector2
 var Objects    : Dictionary
@@ -15,36 +20,48 @@ var AIs        : Dictionary
 var Envi       : Env
 
 func GetTree() -> Node:
-    return null
-func GetObjects() -> Dictionary:
-    return Dictionary()
-func GetCharacters() -> Dictionary:
-    return Dictionary()
-func GetPlayers() -> Dictionary:
-    return Dictionary()
-func GetAIs() -> Dictionary:
-    return Dictionary()
+    return get_node_or_null(get_path())
+func GetObjects() -> Array:
+    return self.Objects.keys()
+func GetCharacters() -> Array:
+    return self.Characters.keys()
+func GetPlayers() -> Array:
+    return self.Players.keys()
+func GetAIs() -> Array:
+    return self.AIs.keys()
 func GetName() -> String:
-    return ""
+    return self.name
 func GetSize() -> Vector2:
-    return Vector2()
+    return self.Size
 func GetPosition() -> Vector2:
-    return Vector2()
+    return self.Position
 func GetEnvironment() -> Dictionary:
-    return Dictionary()
+    return Dictionary() #TODO: implement Environment first
 func SetName(name:String):
-    return ""
+    self.name = name
 func SetSize(size:Vector2):
-    return Vector2()
+    self.Size = size
 func SetPosition(position:Vector2):
-    return Vector2()
+    self.Position = position
 func SetEnvironment(environment:Dictionary):
-    return Dictionary()
+    return Dictionary() #TODO: implement Environment first
 func AddObject(object:Node):
-    return null
-func AddCharacter(Character:Node):
-    return null
+    if not object.name in self.Objects.keys():
+        self.Objects[object.name] = object
+    else:
+        emit_signal("Object_exists")
+func AddCharacter(character:Node):
+    if not character.GetName() in self.Characters.keys():
+        self.Characters[character.GetName()] = character
+    else:
+        emit_signal("Character_exists")
 func AddPlayer(player:Node):
-    return null
-func AddAI(AI:Node):
-    return null
+    if not player.GetName() in self.Players.keys():
+        self.Players[player.GetName()] = player
+    else:
+        emit_signal("Player_exists")
+func AddAI(ai:Node):
+    if not ai.GetName() in self.AIs.keys():
+        self.AIs[ai.GetName()] = ai
+    else:
+        emit_signal("AI_exists")
